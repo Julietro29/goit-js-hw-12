@@ -37,10 +37,17 @@ async function searchImages(searchTerm, page = 1) {
     const response = await performSearch(searchTerm, page);
 
     if (response.data.hits.length > 0) {
+      if (page === 1) {
+        // Clear gallery only for the first page
+        clearGallery();
+      }
+
       displayImages(response.data.hits);
-      initLightbox();
+      updateLightbox();
+      smoothScrollToGallery();
     } else {
       showNoResultsMessage();
+      clearGallery(); // Clear gallery when no results are found
     }
 
     if (response.data.totalHits <= page * 40) {
@@ -51,6 +58,18 @@ async function searchImages(searchTerm, page = 1) {
     hideLoader();
     showErrorToast("An error occurred while fetching images. Please try again.");
   }
+}
+
+function clearGallery() {
+  gallery.innerHTML = "";
+}
+
+function updateLightbox() {
+  lightbox.refresh();
+}
+
+function smoothScrollToGallery() {
+  gallery.scrollIntoView({ behavior: "smooth" });
 }
 
 async function performSearch(searchTerm, page) {
