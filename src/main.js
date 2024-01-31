@@ -38,7 +38,6 @@ async function searchImages(searchTerm, page = 1) {
 
     if (response.data.hits.length > 0) {
       if (page === 1) {
-        // Clear gallery only for the first page
         clearGallery();
       }
 
@@ -47,7 +46,8 @@ async function searchImages(searchTerm, page = 1) {
       smoothScrollToGallery();
     } else {
       showNoResultsMessage();
-      clearGallery(); // Clear gallery when no results are found
+      clearGallery();
+      btnLoadMore.style.display = "none";
     }
 
     if (response.data.totalHits <= page * 40) {
@@ -69,7 +69,12 @@ function updateLightbox() {
 }
 
 function smoothScrollToGallery() {
-  gallery.scrollIntoView({ behavior: "smooth" });
+  const firstImageHeight = gallery.querySelector(".image-card a img").clientHeight;
+
+  window.scrollBy({
+    top: firstImageHeight,
+    behavior: "smooth",
+  });
 }
 
 async function performSearch(searchTerm, page) {
